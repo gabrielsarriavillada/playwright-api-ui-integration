@@ -1,0 +1,24 @@
+{
+  "name": "playwright-framework-training",
+  "version": "1.0.0",
+  "description": "Incremental Playwright + TypeScript framework exploring modern UI and API automation patterns",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrielsarriavillada/playwright-framework-training.git"
+  },
+  "keywords": [],
+  "author": "Gabriel Sarria Villada",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.1.2",
+    "dotenv": "^17.4.2",
+    "typescript": "^7.0.2"
+  }
+}
