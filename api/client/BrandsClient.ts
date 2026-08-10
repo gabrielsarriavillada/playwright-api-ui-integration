@@ -1,6 +1,6 @@
-import { APIRequestContext, APIResponse } from "@playwright/test";
+import type { APIRequestContext, APIResponse } from "@playwright/test";
 
-export class BrandApi {
+export class BrandsClient {
     constructor(
         private request: APIRequestContext,
     ) {}
