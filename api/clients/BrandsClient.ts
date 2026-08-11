@@ -6,6 +6,6 @@ export class BrandsClient {
     ) {}
 
     async getAllBrands(): Promise<APIResponse> {
-        return await this.request.get("/brands");
+        return this.request.get("/brands");
     }
 };
