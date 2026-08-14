@@ -1,17 +1,15 @@
-import { expect, test } from "@playwright/test";
-import { UsersClient } from "../../api/clients/UsersClient.js";
+import { expect, test } from "../../fixtures/api.fixture.js";
 import type { UserDetails } from "../../api/models/userDetails.js";
 import type { UserResponse } from "../../api/models/userResponse.js";
 
 test.describe("Registration API", () => {
-    test("Success registration", async ({ request }) => {
-        const usersClient = new UsersClient(request);
+    test("Success registration", async ({ usersClient }) => {
         const userDetails: UserDetails = {
             first_name: "Pepe",
             last_name: "Lorca",
             password: "Playwright0!",
             email: `test${Date.now()}@test.com`,
-        }
+        };
 
         const response = await usersClient.registerUser(userDetails);
 

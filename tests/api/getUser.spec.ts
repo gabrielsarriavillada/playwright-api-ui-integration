@@ -1,13 +1,10 @@
-import { expect, test } from "@playwright/test";
-import { UsersClient } from "../../api/clients/UsersClient.js";
+import { expect, test } from "../../fixtures/api.fixture.js";
 import type { UserDetails } from "../../api/models/userDetails.js";
-import type { UserCredentials } from "../../api/models/userCredentials.js";
 import type { UserResponse } from "../../api/models/userResponse.js";
-import type { LoginResponse } from "../../api/models/loginResponse.js";
+import { authenticateUser } from "../../api/helpers/authenticateUser.js";
 
 test.describe("Get user API", () => {
-    test("User is correctly authenticated", async ({ request }) => {
-        const usersClient = new UsersClient(request);
+    test("authenticated user can retrieve its profile", async ({ usersClient }) => {
 
         const userDetails: UserDetails = {
             first_name: "Pepe",
@@ -16,22 +13,7 @@ test.describe("Get user API", () => {
             email: `test${Date.now()}@test.com`,
         };
 
-        const registrationResponse = await usersClient.registerUser(userDetails);
-
-        expect(registrationResponse.status()).toBe(201);
-
-        const userCredentials: UserCredentials = {
-            email: userDetails.email,
-            password: userDetails.password,
-        };
-
-        const loginResponse = await usersClient.loginUser(userCredentials);
-
-        expect(loginResponse.status()).toBe(200);
-
-        const loginResponseBody: LoginResponse = await loginResponse.json();
-
-        const token = loginResponseBody.access_token;
+        const token = await authenticateUser(usersClient, userDetails);
 
         const getUserResponse = await usersClient.getCurrentUser(token);
 

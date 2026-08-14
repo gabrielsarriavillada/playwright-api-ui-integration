@@ -1,16 +1,16 @@
-import { Address } from "./userDetails.js";
+import type { Address } from "./userDetails.js";
 
 export type UserResponse = {
     "first_name": string;
     "last_name": string;
     "address": Address;
-    "phone": string;
-    "dob": string;
+    "phone": string | null;
+    "dob": string | null;
     "email": string;
     "id": string;
-    "provider": string;
+    "provider": string | null;
     "totp_enabled": boolean;
     "enabled": boolean;
-    "failed_login_attempts": number;
+    "failed_login_attempts": number | null;
     "created_at": string;
 }

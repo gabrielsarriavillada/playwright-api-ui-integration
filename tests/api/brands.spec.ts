@@ -1,11 +1,8 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../fixtures/api.fixture.js";
 import type { Brand } from "../../api/models/brand.js";
-import { BrandsClient } from "../../api/clients/BrandsClient.js";
 
 test.describe("Brands API", () => {
-    test("should provide all brands", async ({ request }) => {
-        const brandsClient = new BrandsClient(request);
-        
+    test("should provide all brands", async ({ brandsClient }) => {
         const response = await brandsClient.getAllBrands();
 
         await expect(response).toBeOK();

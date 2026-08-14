@@ -10,9 +10,9 @@ export type UserDetails = {
 
 export type Address = {
     "street"?: string;
-    "house_number"?: string;
+    "house_number"?: string | null;
     "city"?: string;
-    "state"?: string;
+    "state"?: string | null;
     "country"?: string;
-    "postal_code"?: string;
+    "postal_code"?: string | null;
 };

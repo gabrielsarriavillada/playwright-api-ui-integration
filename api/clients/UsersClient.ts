@@ -9,7 +9,7 @@ export class UsersClient {
         return this.request.post("/users/register", {
             data: userDetails
         });
-    };
+    }
 
     loginUser(userCredentials: UserCredentials): Promise<APIResponse> {
         return this.request.post("/users/login", {
@@ -17,8 +17,8 @@ export class UsersClient {
                 email: userCredentials.email,
                 password: userCredentials.password,
             },
-        })
-    };
+        });
+    }
 
     getCurrentUser(token: string): Promise<APIResponse> {
         return this.request.get("/users/me", {
@@ -26,5 +26,5 @@ export class UsersClient {
                 Authorization: `Bearer ${token}`,
             },
         });
-    };
-};
+    }
+}
