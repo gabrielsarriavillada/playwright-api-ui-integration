@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { ProductsPage } from "../../pages/ProductsPage.js";
 
-test("navigation to homepage", async ({ page }) => {
+test("Navigation to homepage", async ({ page }) => {
     const productsPage = new ProductsPage(page);
 
     await productsPage.goto();
@@ -9,7 +9,7 @@ test("navigation to homepage", async ({ page }) => {
     await expect(page).toHaveURL("/");
 });
 
-test("filter products by category: pliers", async ({ page }) => {
+test("Filter products by category: pliers", async ({ page }) => {
     const productsPage = new ProductsPage(page);
 
     await productsPage.goto();
