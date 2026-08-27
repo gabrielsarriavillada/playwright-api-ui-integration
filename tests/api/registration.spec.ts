@@ -1,5 +1,4 @@
 import { expect, test } from "../../fixtures/api.fixture.js";
-import type { UserDetails } from "../../api/models/userDetails.js";
 import type { UserResponse } from "../../api/models/userResponse.js";
 import { createUserDetails } from "../../api/helpers/createUserDetails.js";
 
