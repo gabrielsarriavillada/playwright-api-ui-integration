@@ -1,6 +1,7 @@
-import { test as base } from "@playwright/test";
+import { request as playwrightRequest, test as base } from "@playwright/test";
 import { BrandsClient } from "../api/clients/BrandsClient.js";
 import { UsersClient } from "../api/clients/UsersClient.js";
+import { env } from "../config/env.js";
 
 type ApiFixtures = {
     brandsClient: BrandsClient;
@@ -8,12 +9,24 @@ type ApiFixtures = {
 };
 
 export const test = base.extend<ApiFixtures>({
-    usersClient: async ({ request }, use) => {
-        await use(new UsersClient(request));
+    usersClient: async ({}, use) => {
+        const apiContext = await playwrightRequest.newContext({
+            baseURL: env.apiBaseUrl,
+        });
+
+        await use(new UsersClient(apiContext));
+
+        await apiContext.dispose();
     },
 
-    brandsClient: async ({ request }, use) => {
-        await use(new BrandsClient(request));
+    brandsClient: async ({}, use) => {
+        const apiContext = await playwrightRequest.newContext({
+            baseURL: env.apiBaseUrl,
+        });
+
+        await use(new BrandsClient(apiContext));
+
+        await apiContext.dispose();
     },
 });
 
