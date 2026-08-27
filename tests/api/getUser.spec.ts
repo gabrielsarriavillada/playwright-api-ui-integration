@@ -1,17 +1,11 @@
 import { expect, test } from "../../fixtures/api.fixture.js";
-import type { UserDetails } from "../../api/models/userDetails.js";
 import type { UserResponse } from "../../api/models/userResponse.js";
 import { authenticateUser } from "../../api/helpers/authenticateUser.js";
+import { createUserDetails } from "../../api/helpers/createUserDetails.js";
 
 test.describe("Get user API", () => {
     test("authenticated user can retrieve its profile", async ({ usersClient }) => {
-
-        const userDetails: UserDetails = {
-            first_name: "Pepe",
-            last_name: "Lorca",
-            password: "Playwright0!",
-            email: `test${Date.now()}@test.com`,
-        };
+        const userDetails = createUserDetails();
 
         const token = await authenticateUser(usersClient, userDetails);
 
