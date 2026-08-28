@@ -1,0 +1,18 @@
+import { test, expect } from "../../fixtures/authenticated.fixture.js";
+
+test("Favorite items are correctly added", async({ authenticatedPage, favoritesClient, productsClient, token }) => {
+    const productsResponse = await productsClient.getProducts();
+    await expect(productsResponse.status()).toBe(200);
+
+    const productsBody = await productsResponse.json();
+
+    const productId = productsBody.data[0].id;
+    const productName = productsBody.data[0].name;
+
+    const favoritesResponse = await favoritesClient.addFavorite(token, productId);
+    expect(favoritesResponse.status()).toBe(201);
+
+    await authenticatedPage.goto("/account/favorites");
+
+    await expect(authenticatedPage.getByTestId('product-name')).toHaveText(productName);
+});
