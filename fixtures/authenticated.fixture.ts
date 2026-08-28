@@ -8,17 +8,17 @@ import { createAuthStorageState } from "../api/helpers/createAuthStorageState.js
 type AuthenticatedFixture = {
     userDetails: UserDetails;
     authenticatedPage: Page;
+    token: string;
 };
 
 export const test = apiTest.extend<AuthenticatedFixture>({
-    userDetails: async({}, use) => {
+    userDetails: async ({}, use) => {
         const userDetails = createUserDetails();
 
         await use(userDetails);
     },
 
-    authenticatedPage: async({ userDetails, usersClient, browser }, use) => {
-        const token = await authenticateUser(usersClient, userDetails);
+    authenticatedPage: async ({ token, browser }, use) => {
         const storageState = createAuthStorageState(token);
         const context = await browser.newContext({ storageState });
         const page = await context.newPage();
@@ -27,6 +27,12 @@ export const test = apiTest.extend<AuthenticatedFixture>({
 
         await context.close();
     },
+
+    token: async ({ userDetails, usersClient }, use) => {
+        const token = await authenticateUser(usersClient, userDetails);
+
+        await use(token);
+    }
 });
 
 export { expect } from "@playwright/test";
