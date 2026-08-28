@@ -7,7 +7,7 @@ export class UsersClient {
 
     registerUser(userDetails: UserDetails): Promise<APIResponse> {
         return this.request.post("/users/register", {
-            data: userDetails
+            data: userDetails,
         });
     }
 

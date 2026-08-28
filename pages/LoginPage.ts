@@ -7,7 +7,7 @@ export class LoginPage {
     readonly passwordInput: Locator;
     readonly loginButton: Locator;
 
-    constructor (private readonly page: Page) {
+    constructor(private readonly page: Page) {
         this.emailInput = page.getByTestId("email");
         this.passwordInput = page.getByTestId("password");
         this.loginButton = page.getByTestId("login-submit");

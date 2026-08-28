@@ -42,7 +42,7 @@ export const test = base.extend<ApiFixtures>({
 
         await apiContext.dispose();
     },
-    productsClient: async({}, use) => {
+    productsClient: async ({}, use) => {
         const apiContext = await playwrightRequest.newContext({
             baseURL: env.apiBaseUrl,
         });

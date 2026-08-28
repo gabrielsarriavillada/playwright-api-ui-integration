@@ -32,7 +32,7 @@ export const test = apiTest.extend<AuthenticatedFixture>({
         const token = await authenticateUser(usersClient, userDetails);
 
         await use(token);
-    }
+    },
 });
 
 export { expect } from "@playwright/test";
