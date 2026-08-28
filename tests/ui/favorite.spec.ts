@@ -1,4 +1,4 @@
-import { ProductsResponse } from "../../api/models/products.js";
+import type { ProductsResponse } from "../../api/models/products.js";
 import { test, expect } from "../../fixtures/authenticated.fixture.js";
 
 test("Favorite items are correctly added", async({ authenticatedPage, favoritesClient, productsClient, token }) => {
@@ -16,5 +16,5 @@ test("Favorite items are correctly added", async({ authenticatedPage, favoritesC
 
     await authenticatedPage.goto("/account/favorites");
 
-    await expect(authenticatedPage.getByTestId('product-name')).toHaveText(productName);
+    await expect(authenticatedPage.getByTestId("product-name")).toHaveText(productName);
 });
