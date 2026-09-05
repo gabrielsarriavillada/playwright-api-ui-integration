@@ -7,5 +7,5 @@ test("Correct options in left menu for authenticated user", async ({ authenticat
     await expect(authenticatedPage.getByTestId("nav-favorites")).toBeVisible();
     await expect(authenticatedPage.getByTestId("nav-profile")).toBeVisible();
     await expect(authenticatedPage.getByTestId("nav-invoices")).toBeVisible();
-    await expect(authenticatedPage.getByTestId("nav-messages-test")).toBeVisible();
+    await expect(authenticatedPage.getByTestId("nav-messages")).toBeVisible();
 });
