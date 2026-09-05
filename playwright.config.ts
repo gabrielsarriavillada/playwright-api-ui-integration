@@ -7,7 +7,6 @@ export default defineConfig({
     use: {
         trace: "on-first-retry",
         testIdAttribute: "data-test",
-        screenshot: "only-on-failure",
     },
 
     projects: [
@@ -17,6 +16,7 @@ export default defineConfig({
             use: {
                 ...devices["Desktop Chrome"],
                 baseURL: env.uiBaseUrl,
+                screenshot: "only-on-failure",
             },
         },
         {
