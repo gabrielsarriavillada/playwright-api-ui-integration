@@ -1,4 +1,4 @@
-import { isProductResponse } from "../../api/validators/productValidator.js";
+import { ProductsResponseSchema } from "../../api/schema/products.js";
 import { test, expect } from "../../fixtures/authenticated.fixture.js";
 
 test("Favorite items are correctly added", async({ authenticatedPage, favoritesClient, productsClient, token }) => {
@@ -7,13 +7,17 @@ test("Favorite items are correctly added", async({ authenticatedPage, favoritesC
 
     const productsBody: unknown = await productsResponse.json();
 
-    if (!isProductResponse(productsBody)) {
-        throw new Error("First product does not have the expected format");
+    const result = ProductsResponseSchema.safeParse(productsBody);
+
+    if (!result.success) {
+        throw new Error(`Products response does not match the expected schema: ${result.error.message}`);
     }
 
-    expect(productsBody.data.length).toBeGreaterThan(0);
+    const validatedProducts = result.data;
 
-    const product = productsBody.data[0];
+    expect(validatedProducts.data.length).toBeGreaterThan(0);
+
+    const product = validatedProducts.data[0];
 
     const productId = product.id;
     const productName = product.name;
