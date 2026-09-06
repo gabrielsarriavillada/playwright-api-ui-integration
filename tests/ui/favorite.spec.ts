@@ -1,4 +1,4 @@
-import { ProductsResponseSchema } from "../../api/schema/products.js";
+import { ProductsResponseSchema } from "../../api/schemas/products.js";
 import { test, expect } from "../../fixtures/authenticated.fixture.js";
 
 test("Favorite items are correctly added", async({ authenticatedPage, favoritesClient, productsClient, token }) => {
