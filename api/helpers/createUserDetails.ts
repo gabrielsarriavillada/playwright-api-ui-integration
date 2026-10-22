@@ -6,5 +6,6 @@ export function createUserDetails(userDetails: Partial<UserDetails> = {}): UserD
         "last_name": userDetails.last_name ?? "Lorca",
         "password": userDetails.password ?? "Playwright0!",
         "email": userDetails.email ?? `test${Date.now()}@test.com`,
+        // "dob": "1970-01-01",
     }
 }
