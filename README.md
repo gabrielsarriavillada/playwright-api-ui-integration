@@ -16,7 +16,11 @@ The architecture aims to keep tests readable and focused on their intent by sepa
 ├── pages/
 ├── tests/
 │   ├── api/
-│   └── ui/
+│   ├── ui/
+│   ├── support/
+│   └── effectiveness/
+├── specs/
+├── .codex/agents/
 ├── .env.example
 └── playwright.config.ts
 ```
@@ -25,7 +29,9 @@ The architecture aims to keep tests readable and focused on their intent by sepa
 - `config/`: Framework configuration utilities. `env.ts` loads required environment variables and fails early when mandatory configuration is missing.
 - `fixtures/`: Composable Playwright fixtures. `api.fixture.ts` manages the API request context and exposes API clients. `authenticated.fixture.ts` extends it with user creation, authentication, and an authenticated browser page initialized through storage state.
 - `pages/`: Page objects encapsulating UI locators and reusable interactions.
-- `tests/`: Test specifications separated into API and UI projects. UI specifications also contain API-assisted integration scenarios when API setup and UI verification are combined.
+- `tests/`: API and UI specifications, including API-assisted integration scenarios, shared journey functions, and an opt-in effectiveness suite excluded from ordinary UI/API discovery.
+- `specs/`: Exercise specifications, test plans, exploration observations and limitations.
+- `.codex/agents/`: Playwright planner, generator and healer agent definitions. These use Playwright tools; they are not a custom agent framework.
 - `.env.example`: Template containing the environment variables required to configure the UI and API base URLs without committing local `.env` values.
 - `playwright.config.ts`: Playwright configuration defining the UI and API projects, their test matching rules, project-specific base URLs, and shared test options.
 
@@ -59,6 +65,8 @@ Generating users on demand keeps tests independent from pre-existing data and re
 
 - Node.js
 - npm
+- Network access to the configured demo UI and API, including registration and login endpoints.
+- For agent-assisted exploration and generation: Codex with the Playwright Test MCP server connected and the required tools available. Running committed tests does not require an agent session.
 
 ### Installation
 
@@ -80,9 +88,19 @@ npx playwright install
 cp .env.example .env
 ```
 
+Set `UI_BASE_URL` and `API_BASE_URL` in `.env` for the intended demo environment. Keep local values out of version control.
+
+For the optional agent workflow, Codex launches the Playwright Test MCP server through local MCP configuration. Configure its command and arguments to invoke the installed server from the repository root; the equivalent command is:
+
+```bash
+./node_modules/.bin/playwright run-test-mcp-server
+```
+
+Manually running this command does not establish a Codex MCP connection. `.codex/config.toml` is ignored because connection settings may contain machine-specific paths. Verify the required tools are exposed in the Codex session before invoking an agent.
+
 ### Running the Tests
 
-Run the complete test suite:
+Run the ordinary UI/API suite (excludes the opt-in effectiveness cases):
 
 ```bash
 npm test
@@ -91,7 +109,7 @@ npm test
 Run only UI tests:
 
 ```bash
-npx playwright test --project=ui 
+npx playwright test --project=ui
 ```
 
 Run only API tests:
@@ -105,3 +123,51 @@ Run the TypeScript check:
 ```bash
 npm run typecheck
 ```
+
+## Playwright-agent workflow
+
+The Favourites exercise used the installed planner to explore the demo UI and save [the plan](specs/favourites-ui-persistence.md), followed by the generator to create a test for human review. The healer definition is available but was not invoked for this exercise.
+
+`tests/ui/seed.spec.ts` is an exploration entry point for project `ui`. The regression test independently uses `authenticatedPage`; it does not require the seed to run first or reuse an exploratory session. The shared journey selects a catalogue product at runtime, adds it through its product page once, and checks one total favourite entry with the captured exact title before and after reload.
+
+Run only the regression:
+
+```bash
+./node_modules/.bin/playwright test \
+  tests/ui/favourites-ui-persistence.spec.ts \
+  --project=ui --workers=1 --retries=0
+```
+
+## Opt-in assertion-effectiveness check
+
+Commit `d0d0d92` adds two independent tests using the same journey and assertions with fresh authenticated fixtures:
+
+- **Baseline:** real responses throughout; expected to pass.
+- **Fault:** after pre-reload assertions pass, replace the reload-triggered GET `/favorites` response with `[]`. Routing is restricted to the configured API origin, exact path and GET method.
+
+Run explicitly:
+
+```bash
+./node_modules/.bin/playwright test \
+  --config=tests/effectiveness/playwright.config.ts \
+  --workers=1 --retries=0
+```
+
+Interpret results manually. Intended detection requires all of:
+
+- Baseline passes and fault-case pre-reload checks complete.
+- Upstream contains the favourite, and exactly one successful replacement delivers an empty collection.
+- The labelled **Post-reload Favourites total entry count** assertion fails with expected **1**, received **0**.
+
+Intended detection produces one pass, one deliberate assertion failure and exit status 1. If baseline passes and the injection is confirmed but the fault test passes, classify it as **fault missed**. Setup errors, missing interception evidence or unrelated failures are **inconclusive**. Exit status alone is insufficient. No automated effectiveness classifier or expected-failure marker is implemented.
+
+Inspect `test-results/effectiveness/results.json` and `playwright-report/effectiveness/index.html`. Attachments record addition status, completion of pre-reload checks, upstream/delivered collection lengths and successful fulfilment count. Reports and exploration artifacts are ignored.
+
+## Recorded verification and limitations
+
+Historical validation recorded type checking and discovery checks passing, followed by a passing targeted regression execution. In the recorded effectiveness run on 2026-11-17, baseline passed and the fault case recorded upstream length 1, delivered length 0, one fulfilment and the intended labelled assertion failure. These observations are not current CI status or evidence of production use or broad reliability.
+
+- Favourites identity verification uses the captured exact title because no product ID/link was observed on its card.
+- Tests depend on the external demo service and current UI structure. Sandbox DNS failures occurred during setup; an earlier exploratory addition returned 401 for an unresolved reason.
+- Authentication failures remain failures; persistence is then unverified.
+- This check covers one empty-after-reload fault. Broader fault coverage, repeated-add behaviour and cross-session persistence are not implemented by this exercise.
